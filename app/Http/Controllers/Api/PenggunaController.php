@@ -17,13 +17,13 @@ class PenggunaController extends Controller {
   public function loginCheck(Request $request){
     $email_pengguna = $request->email_pengguna;
     $password_pengguna = $request->password_pengguna;
-    $token = $request->token;
+  //  $token = $request->token;
     if(!isset($email_pengguna) || !isset($password_pengguna)){
       return $this->httpResponse('400', 'Bad Request');
     }
-    $insert = DB::table('pengguna')->insert([
-      'token_pengguna' => $token
-    ]);
+    // $insert = DB::table('pengguna')->insert([
+    //   'token_pengguna' => $token
+    // ]);
     $find = DB::table('pengguna')
               ->where([
                 ['email_pengguna', '=', $email_pengguna],
