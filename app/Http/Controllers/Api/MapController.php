@@ -25,7 +25,6 @@ class MapController extends Controller {
         $lat_daerah = $request->lat_daerah;
         $lng_daerah = $request->lng_daerah;
         $waktu = date("Y-m-d H:i:s");
-        $waktu = null;
         $kantor_polisi = $this->getDistance($lat_daerah, $lng_daerah, -6.244508, 106.800628);
         try {
             $insertPin = DB::table('daerahrawan')->insert([
@@ -54,18 +53,21 @@ class MapController extends Controller {
     * @return kondisi dalam bentuk string melambangkan statusnya (aman, sedang, atau rawan)
     */
     public function getPin(request $request){
+        date_default_timezone_set('Asia/Bangkok');
         $latNow = $request->lat;
         $lngNow = $request->lng;
-        $sumDistance = 0;
+        $currentTime = date("Y-m-d H:i:s");
+        $sumPin = 0;
 
-        $allLoc = DB::table('daerahrawan')->select('lat_daerah','lng_daerah')->get();
+        $allLoc = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
         foreach ($allLoc as $row){
             $distance = $this->getDistance($latNow, $lngNow, $row->lat_daerah, $row->lng_daerah);
-            if($distance < 50) $sumDistance++;
+            $timeDecay = $this->getDecay($currentTime, $row->waktu);
+            if($distance < 50 && $timeDecay) $sumPin++;
         }
-        if ($sumDistance <= 5) return "aman";
-        else if ($sumDistance > 5 && $sumDistance <= 10) return "sedang";
-        else if ($sumDistance > 10) return "rawan";
+        if ($sumPin <= 5) return "aman";
+        else if ($sumPin > 5 && $sumPin <= 10) return "sedang";
+        else if ($sumPin > 10) return "rawan";
     }
 
     /**
@@ -91,5 +93,24 @@ class MapController extends Controller {
         return $d;
     }
 
-
+    /**
+    * Fungsi untuk mencari jarak waktu kejadian pada database dan waktu pengguna aplikasi
+    * @param $currentTime = waktu pengguna saat ini
+    * @param $dbTime = waktu kejadian pada database
+    * @return boolean apakah selisih waktu +/- 3jam
+    */
+    public function getDecay($currentTime, $dbTime){
+        $selisih = abs(strtotime($dbTime) - strtotime($currentTime))/3600;
+        if ($selisih <= 3) return true;
+        else return false;
+    }
+    
+    /**
+    * Fungsi untuk mencari semua pin
+    * @return array of json of all pin location and time
+    */
+    public function getAllPin(){
+        $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
+        return $allPin;
+    }
 }

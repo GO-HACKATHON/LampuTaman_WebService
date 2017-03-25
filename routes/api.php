@@ -20,6 +20,7 @@ Route::any('/test', function(){
 Route::any('/login', 'Api\PenggunaController@loginCheck');
 Route::any('/register', 'Api\PenggunaController@register');
 Route::any('/getpin', 'Api\MapController@getPin');
+Route::any('/getallpin', 'Api\MapController@getAllPin');
 Route::any('/insertpin', 'Api\MapController@insertPin');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
