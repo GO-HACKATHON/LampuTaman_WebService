@@ -55,16 +55,16 @@ class MapController extends Controller {
     * @return kondisi dalam bentuk string melambangkan statusnya (aman, sedang, atau rawan)
     */
     public function getPin(request $request){
-        date_default_timezone_set('Asia/Bangkok');
+        
         $latNow = $request->lat;
         $lngNow = $request->lng;
-        $currentTime = date("Y-m-d H:i:s");
+        
         $sumPin = 0;
 
         $allLoc = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
         foreach ($allLoc as $row){
             $distance = $this->getDistance($latNow, $lngNow, $row->lat_daerah, $row->lng_daerah);
-            $timeDecay = $this->getDecay($currentTime, $row->waktu);
+            $timeDecay = $this->getDecay($row->waktu);
             if($distance < 50 && $timeDecay) $sumPin++;
         }
         if ($sumPin <= 5) return "aman";
@@ -102,20 +102,27 @@ class MapController extends Controller {
     * @param $dbTime = waktu kejadian pada database
     * @return boolean apakah selisih waktu +/- 3jam
     */
-    public function getDecay($currentTime, $dbTime){
+    public function getDecay($dbTime){
+        date_default_timezone_set('Asia/Bangkok');
+        $currentTime = date("Y-m-d H:i:s");
         $selisih = abs(strtotime($dbTime) - strtotime($currentTime))/3600;
         if ($selisih <= 3) return true;
         else return false;
     }
-
+    
     /**
     * Fungsi untuk mencari semua pin
     * @return array of json of all pin location and time
     */
     public function getAllPin(){
-        $allPin = DB::table('daerahrawan')
-                    ->select('lat_daerah', 'lng_daerah')
-                    ->get();
+        $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu','deskripsi_daerah')->get();
+        $i = 0;
+        foreach ($allPin as $pin){
+            if (!($this->getDecay($pin->waktu))){
+                unset($allPin[$i]);
+            }
+            $i++;
+        }
         return $allPin;
     }
 
@@ -125,19 +132,19 @@ class MapController extends Controller {
     public function token(request $request){
         $token = $request->token;
         $long = $request->longitude;
-        $lat = $request->latitude;
+        $lat = $request->latitude; 
 
         $msg = array
         (
             'message'   => 'here is a message. message',
             'title'     => 'Amann',
             'subtitle'  => 'This is a subtitle. subtitle',
-
+            
             'vibrate'   => 1,
             'sound'     => 1,
-
+            
             'body'      => 'Teman anda sedang dalam bahaya di koordinat' .$lat. ', ' .$long
-
+        
         );
 
         //$query = DB::table('helper')->get();
@@ -155,7 +162,7 @@ class MapController extends Controller {
                         'notification' => $msg,
                         'priority' => 10
                     );
-
+                    
                     $headers = array(
                         'Authorization: key=' . FIREBASE_API_KEY,
                         'Content-Type: application/json'
@@ -182,13 +189,13 @@ class MapController extends Controller {
         //}
 
         if ($send == ""){
-            $send = "Notification Sent!";
-            //echo $send;
+            $send = "Notification Sent!"; 
+            //echo $send; 
             $pengguna = new PenggunaController;
             return $pengguna->httpResponse('200', $send);
         } else {
             $pengguna = new PenggunaController;
-            return $pengguna->httpResponse('500', $send);
+            return $pengguna->httpResponse('500', $send);  
             //echo $send;
         }
 
