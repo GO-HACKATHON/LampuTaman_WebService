@@ -11,7 +11,6 @@ class MapController extends Controller {
     
     /**
     * Fungsi untuk menandai daerah sebagai daerah yang berbahaya sengan menyimpan latitude, longitude, deskripsi, dan atribut penunjang lainnya
-    * helper_x adalah
     * @param \Illuminate\Http\Request $request
     * @return code 200 jika penandaan daerah berhasil
     * @return code 500 jika penandaan daerah gagal
@@ -40,7 +39,7 @@ class MapController extends Controller {
         } catch(Exception $e){
             echo $e;
             $pengguna = new PenggunaController;
-            return $pengguna->httpResponse('500', 'Gagal mendaftar. Coba lagi');
+            return $pengguna->httpResponse('500', 'Gagal menandai daerah. Coba lagi');
         }    
         $pengguna = new PenggunaController;
         return $pengguna->httpResponse('200', 'Penandaan daerah berhasil.');
