@@ -21,6 +21,7 @@ Route::any('/login', 'Api\PenggunaController@loginCheck');
 Route::any('/register', 'Api\PenggunaController@register');
 Route::any('/getpin', 'Api\MapController@getPin');
 Route::any('/insertpin', 'Api\MapController@insertPin');
+Route::any('/token', 'Api\MapController@token');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->user();
