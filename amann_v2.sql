@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 25, 2017 at 10:26 AM
+-- Generation Time: Mar 25, 2017 at 11:16 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 7.0.13
 
@@ -33,7 +33,9 @@ CREATE TABLE `daerahrawan` (
   `deskripsi_daerah` varchar(1024) NOT NULL,
   `gambar_daerah` varchar(1024) NOT NULL,
   `lat_daerah` double NOT NULL,
-  `lng_daerah` double NOT NULL
+  `lng_daerah` double NOT NULL,
+  `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `kantor_polisi` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
