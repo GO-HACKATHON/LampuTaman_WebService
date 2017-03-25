@@ -113,7 +113,7 @@ class MapController extends Controller {
     * @return array of json of all pin location and time
     */
     public function getAllPin(){
-        $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
+        $allPin = DB::table('daerahrawan')->get();
         return $allPin;
     }
 
