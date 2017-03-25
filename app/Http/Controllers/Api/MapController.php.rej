@@ -1,0 +1,18 @@
+diff a/app/Http/Controllers/Api/MapController.php b/app/Http/Controllers/Api/MapController.php	(rejected hunks)
+@@ -16,13 +16,13 @@
+     * @return code 500 jika penandaan daerah gagal
+     */
+     public function insertPin(request $request){
+-        $nohp_pengguna = $request->nohp_pengguna;
++        $email_pengguna = $request->email_pengguna;
+         $nama_daerah = $request->nama_daerah;
+         $deskripsi_daerah = $request->deskripsi_daerah;
+-        $gambar_daerah = '';
++        $gambar_daerah = null;
+         $lat_daerah = $request->lat_daerah;
+         $lng_daerah = $request->lng_daerah;
+-        $waktu = $request->waktu;
++        $waktu = null;
+         $kantor_polisi = $request->kantor_polisi;
+ 
+         try {

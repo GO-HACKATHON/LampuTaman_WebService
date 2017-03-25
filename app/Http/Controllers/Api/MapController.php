@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use \Exception;
 
 class MapController extends Controller {
-    
+
     /**
     * Fungsi untuk menandai daerah sebagai daerah yang berbahaya sengan menyimpan latitude, longitude, deskripsi, dan atribut penunjang lainnya
     * @param \Illuminate\Http\Request $request
@@ -31,6 +31,12 @@ class MapController extends Controller {
         try {
             $insertPin = DB::table('daerahrawan')->insert([
                 'email_pengguna' => $email_pengguna,
+        $waktu = null;
+        $kantor_polisi = $request->kantor_polisi;
+
+        try {
+            $insertPin = DB::table('daerahrawan')->insert([
+                'email_pengguna' => $nohp_pengguna,
                 'nama_daerah' => $nama_daerah,
                 'deskripsi_daerah' => $deskripsi_daerah,
                 'gambar_daerah' => $gambar_daerah,
@@ -43,7 +49,7 @@ class MapController extends Controller {
             echo $e;
             $pengguna = new PenggunaController;
             return $pengguna->httpResponse('500', 'Gagal menandai daerah. Coba lagi');
-        }    
+        }
         $pengguna = new PenggunaController;
         return $pengguna->httpResponse('200', 'Penandaan daerah berhasil.');
     }
