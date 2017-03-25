@@ -25,18 +25,12 @@ class MapController extends Controller {
         $lat_daerah = $request->lat_daerah;
         $lng_daerah = $request->lng_daerah;
         $waktu = date("Y-m-d H:i:s");
-        //$waktu = '1996-08-16';
-        $kantor_polisi = $this->getDistance($lat_daerah, $lng_daerah, -6.244508, 106.800628);
-        
-        try {
-            $insertPin = DB::table('daerahrawan')->insert([
-                'email_pengguna' => $email_pengguna,
         $waktu = null;
-        $kantor_polisi = $request->kantor_polisi;
+        $kantor_polisi = $this->getDistance($lat_daerah, $lng_daerah, -6.244508, 106.800628);
 
         try {
             $insertPin = DB::table('daerahrawan')->insert([
-                'email_pengguna' => $nohp_pengguna,
+                'email_pengguna' => $email_pengguna,
                 'nama_daerah' => $nama_daerah,
                 'deskripsi_daerah' => $deskripsi_daerah,
                 'gambar_daerah' => $gambar_daerah,
