@@ -17,7 +17,7 @@ Route::any('/test', function(){
   return "test ok";
 });
 
-Route::any('/login', '');
+Route::any('/login', 'Api\PenggunaController@loginCheck');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     //return $request->user();

@@ -12,7 +12,7 @@ class ApiAuth
      * Jika bukan, @return error 403
      * Jika iya, @return pada halaman yang dituju
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @param  \Closure  $next
      * @return mixed
      */
@@ -24,7 +24,7 @@ class ApiAuth
         ];
         return $response;
       }
-      if(!isset($request->key) || $request->key != 'mantapancing'){
+      if(!isset($request->key) || $request->key != 'matapancing'){
         $response = [
           'response' => '403',
           'message' => 'You are not authorized for this API'
