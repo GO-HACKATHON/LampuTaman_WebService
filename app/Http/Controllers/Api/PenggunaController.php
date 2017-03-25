@@ -45,6 +45,8 @@ class PenggunaController extends Controller {
     $name = $request->nama_pengguna;
     $password = $request->password_pengguna;
     $nohp = $request->nohp_pengguna;
+    $tgl_lahir = $request->tgl_lahir;
+    $sex = $request->sex;
 
     $nohp_helper = array();
     $nohp_helper [] = $request->nohp_helper_1;
@@ -64,7 +66,9 @@ class PenggunaController extends Controller {
         'token_pengguna' => 'null',
         'email_pengguna' => $email,
         'password_pengguna' => $password,
-        'nohp_pengguna' => $nohp
+        'nohp_pengguna' => $nohp,
+        'tgl_lahir' => $tgl_lahir,
+        'sex' => $sex
       ]);
     } catch(Exception $e){
       echo $e;
