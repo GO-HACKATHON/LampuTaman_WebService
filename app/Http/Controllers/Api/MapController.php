@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use \Exception;
+
+class MapController extends Controller {
+    
+    /**
+    * Fungsi untuk menandai daerah sebagai daerah yang berbahaya sengan menyimpan latitude, longitude, deskripsi, dan atribut penunjang lainnya
+    * helper_x adalah
+    * @param \Illuminate\Http\Request $request
+    * @return code 200 jika penandaan daerah berhasil
+    * @return code 500 jika penandaan daerah gagal
+    */
+    public function insertPin(request $request){
+        $nohp_pengguna = $request->nohp_pengguna;
+        $nama_daerah = $request->nama_daerah;
+        $deskripsi_daerah = $request->deskripsi_daerah;
+        $gambar_daerah = '';
+        $lat_daerah = $request->lat_daerah;
+        $lng_daerah = $request->lng_daerah;
+        $waktu = $request->waktu;
+        $kantor_polisi = $request->kantor_polisi;
+        
+        try {
+            $insertPin = DB::table('daerahrawan')->insert([
+                'nohp_pengguna' => $nohp_pengguna,
+                'nama_daerah' => $nama_daerah,
+                'deskripsi_daerah' => $deskripsi_daerah,
+                'gambar_daerah' => $gambar_daerah,
+                'lat_daerah' => $lat_daerah,
+                'lng_daerah' => $lng_daerah,
+                'waktu' => $waktu,
+                'kantor_polisi' => $kantor_polisi
+            ]);
+        } catch(Exception $e){
+            echo $e;
+            $pengguna = new PenggunaController;
+            return $pengguna->httpResponse('500', 'Gagal mendaftar. Coba lagi');
+        }    
+        $pengguna = new PenggunaController;
+        return $pengguna->httpResponse('200', 'Penandaan daerah berhasil.');
+    }
+}
