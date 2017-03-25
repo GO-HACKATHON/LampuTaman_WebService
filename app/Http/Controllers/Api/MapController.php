@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use \Exception;
 
+define('FIREBASE_API_KEY', 'AAAA2bP7DTc:APA91bFHwPr2HzTM7iGy_HX_VFwqt0orG3lH0vGHJqPOKUe8lxoE8utdo08Cl0Y1dtoX-7_mJXeYDyEPrPq-qnDS1ZmVdZAMQeVYkVm6aPoDietX9WzsUvYuP8cSoYeWNirl_X-gfxVN');
+
 class MapController extends Controller {
 
     /**
@@ -93,6 +95,7 @@ class MapController extends Controller {
         return $d;
     }
 
+
     /**
     * Fungsi untuk mencari jarak waktu kejadian pada database dan waktu pengguna aplikasi
     * @param $currentTime = waktu pengguna saat ini
@@ -113,4 +116,81 @@ class MapController extends Controller {
         $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
         return $allPin;
     }
+
+    /**
+    * Fungsi untuk membuat token emergency
+    */
+    public function token(request $request){
+        $token = $request->token;
+        $long = $request->longitude;
+        $lat = $request->latitude; 
+
+        $msg = array
+        (
+            'message'   => 'here is a message. message',
+            'title'     => 'Amann',
+            'subtitle'  => 'This is a subtitle. subtitle',
+            
+            'vibrate'   => 1,
+            'sound'     => 1,
+            
+            'body'      => 'Teman anda sedang dalam bahaya di koordinat' .$lat. ', ' .$long
+        
+        );
+
+        //$query = DB::table('helper')->get();
+        //$send = "";
+        //foreach ($query as $row){
+
+            //if(isset($row['token_helper']) == true){
+
+                //$token = $row['token_helper'];
+
+                $token = array($token);
+
+                $fields = array(
+                        'registration_ids' => $token,
+                        'notification' => $msg,
+                        'priority' => 10
+                    );
+                    
+                    $headers = array(
+                        'Authorization: key=' . FIREBASE_API_KEY,
+                        'Content-Type: application/json'
+                    );
+                    //print_r($headers);
+
+                    $ch = curl_init();
+                    curl_setopt( $ch,CURLOPT_URL, 'https://android.googleapis.com/gcm/send' );
+                    curl_setopt( $ch,CURLOPT_POST, true );
+                    curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+                    curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+                    curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+                    curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+                    $result = curl_exec($ch );
+                    curl_close( $ch );
+                    $flag = 1;
+            //}else{
+                // $hp = $row['nohp_helper'];
+
+                // $send = $send . $hp;
+                // $send .= "=";
+
+            //}
+        //}
+
+        if ($send == ""){
+            $send = "Notification Sent!"; 
+            //echo $send; 
+            $pengguna = new PenggunaController;
+            return $pengguna->httpResponse('200', $send);
+        } else {
+            $pengguna = new PenggunaController;
+            return $pengguna->httpResponse('500', $send);  
+            //echo $send;
+        }
+
+
+    }
+
 }
