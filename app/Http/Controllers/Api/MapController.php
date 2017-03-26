@@ -150,13 +150,13 @@ class MapController extends Controller {
 
         );
 
-        //$query = DB::table('helper')->get();
-        //$send = "";
-        //foreach ($query as $row){
+        $query = DB::table('helper')->get();
+        $send = "";
+        foreach ($query as $row){
 
-            //if(isset($row['token_helper']) == true){
+            if($row->token_helper){
 
-                //$token = $row['token_helper'];
+                $token = $row['token_helper'];
 
                 $token = array($token);
 
@@ -182,14 +182,14 @@ class MapController extends Controller {
                     $result = curl_exec($ch );
                     curl_close( $ch );
                     $flag = 1;
-            //}else{
-                // $hp = $row['nohp_helper'];
+            }else{
+                $hp = $row->nohp_helper;
 
-                // $send = $send . $hp;
-                // $send .= "=";
+                $send = $send . $hp;
+                $send .= "=";
 
-            //}
-        //}
+            }
+        }
 
         if ($send == ""){
             $send = "Notification Sent!";
