@@ -102,7 +102,7 @@ class MapController extends Controller {
     * @param $dbTime = waktu kejadian pada database
     * @return boolean apakah selisih waktu +/- 3jam
     */
-    public function getDecay($dbTime){
+    public function getDecay($dbTime) {
         date_default_timezone_set('Asia/Bangkok');
         $currentTime = date("Y-m-d H:i:s");
         $selisih = abs(strtotime($dbTime) - strtotime($currentTime))/3600;
@@ -114,16 +114,22 @@ class MapController extends Controller {
     * Fungsi untuk mencari semua pin
     * @return array of json of all pin location and time
     */
-    public function getAllPin(){
-        $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu','deskripsi_daerah')->get();
-        $dangerPin = array();
-        foreach ($allPin as $pin){
-            if (($this->getDecay($pin->waktu))){
-              array_push($dangerPin, array('lat_daerah' => $pin->lat_daerah, 'lng_daerah' => $pin->lng_daerah, 'waktu' => $pin->waktu, 'deskripsi_daerah' => $pin->deskripsi_daerah));
+    public function getAllPin() {
+        try {
+            $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu','deskripsi_daerah')->get();
+            $dangerPin = array();
+            foreach ($allPin as $pin){
+                if (($this->getDecay($pin->waktu))){
+                  array_push($dangerPin, array('lat_daerah' => $pin->lat_daerah, 'lng_daerah' => $pin->lng_daerah, 'waktu' => $pin->waktu, 'deskripsi_daerah' => $pin->deskripsi_daerah));
+                }
             }
+
+            return ($dangerPin);
+        } catch (Exception $e){
+            echo $e;
+            $pengguna = new PenggunaController;
+            return $pengguna->httpResponse('500', 'Gagal mendapatkan pin. Coba lagi');
         }
-        
-        return ($dangerPin);
     }
 
     /**
