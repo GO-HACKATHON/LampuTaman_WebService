@@ -55,10 +55,10 @@ class MapController extends Controller {
     * @return kondisi dalam bentuk string melambangkan statusnya (aman, sedang, atau rawan)
     */
     public function getPin(request $request){
-        
+
         $latNow = $request->lat;
         $lngNow = $request->lng;
-        
+
         $sumPin = 0;
 
         $allLoc = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu')->get();
@@ -109,21 +109,24 @@ class MapController extends Controller {
         if ($selisih <= 3) return true;
         else return false;
     }
-    
+
     /**
     * Fungsi untuk mencari semua pin
     * @return array of json of all pin location and time
     */
     public function getAllPin(){
         $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu','deskripsi_daerah')->get();
+        return $allPin;
         $i = 0;
+        $temp = array();
         foreach ($allPin as $pin){
             if (!($this->getDecay($pin->waktu))){
-                unset($allPin[$i]);
+              $temp [] = $pin;
             }
             $i++;
         }
-        return $allPin;
+        $allPin = array_diff(json_decode($allPin), $temp);
+        return gettype($allPin);
     }
 
     /**
@@ -132,19 +135,19 @@ class MapController extends Controller {
     public function token(request $request){
         $token = $request->token;
         $long = $request->longitude;
-        $lat = $request->latitude; 
+        $lat = $request->latitude;
 
         $msg = array
         (
             'message'   => 'here is a message. message',
             'title'     => 'Amann',
             'subtitle'  => 'This is a subtitle. subtitle',
-            
+
             'vibrate'   => 1,
             'sound'     => 1,
-            
+
             'body'      => 'Teman anda sedang dalam bahaya di koordinat' .$lat. ', ' .$long
-        
+
         );
 
         //$query = DB::table('helper')->get();
@@ -162,7 +165,7 @@ class MapController extends Controller {
                         'notification' => $msg,
                         'priority' => 10
                     );
-                    
+
                     $headers = array(
                         'Authorization: key=' . FIREBASE_API_KEY,
                         'Content-Type: application/json'
@@ -189,13 +192,13 @@ class MapController extends Controller {
         //}
 
         if ($send == ""){
-            $send = "Notification Sent!"; 
-            //echo $send; 
+            $send = "Notification Sent!";
+            //echo $send;
             $pengguna = new PenggunaController;
             return $pengguna->httpResponse('200', $send);
         } else {
             $pengguna = new PenggunaController;
-            return $pengguna->httpResponse('500', $send);  
+            return $pengguna->httpResponse('500', $send);
             //echo $send;
         }
 
