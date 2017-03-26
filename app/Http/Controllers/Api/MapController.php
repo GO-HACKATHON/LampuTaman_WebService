@@ -123,8 +123,10 @@ class MapController extends Controller {
                   array_push($dangerPin, array('lat_daerah' => $pin->lat_daerah, 'lng_daerah' => $pin->lng_daerah, 'waktu' => $pin->waktu, 'deskripsi_daerah' => $pin->deskripsi_daerah));
                 }
             }
-
+            //$pengguna = new PenggunaController;
+            //return $pengguna->httpResponse('200', $dangerPin);
             return ($dangerPin);
+            
         } catch (Exception $e){
             echo $e;
             $pengguna = new PenggunaController;
@@ -145,10 +147,8 @@ class MapController extends Controller {
             'message'   => 'here is a message. message',
             'title'     => 'Amann',
             'subtitle'  => 'This is a subtitle. subtitle',
-
             'vibrate'   => 1,
             'sound'     => 1,
-
             'body'      => 'Teman anda sedang dalam bahaya di koordinat' .$lat. ', ' .$long
 
         );
@@ -185,7 +185,7 @@ class MapController extends Controller {
                     $result = curl_exec($ch );
                     curl_close( $ch );
                     $flag = 1;
-            }else{
+            } else {
                 $hp = $row->nohp_helper;
 
                 $send = $send . $hp;
