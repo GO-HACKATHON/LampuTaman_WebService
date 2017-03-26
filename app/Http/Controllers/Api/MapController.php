@@ -116,17 +116,14 @@ class MapController extends Controller {
     */
     public function getAllPin(){
         $allPin = DB::table('daerahrawan')->select('lat_daerah','lng_daerah','waktu','deskripsi_daerah')->get();
-        return $allPin;
-        $i = 0;
-        $temp = array();
+        $dangerPin = array();
         foreach ($allPin as $pin){
-            if (!($this->getDecay($pin->waktu))){
-              $temp [] = $pin;
+            if (($this->getDecay($pin->waktu))){
+              array_push($dangerPin, array('lat_daerah' => $pin->lat_daerah, 'lng_daerah' => $pin->lng_daerah, 'waktu' => $pin->waktu, 'deskripsi_daerah' => $pin->deskripsi_daerah));
             }
-            $i++;
         }
-        $allPin = array_diff(json_decode($allPin), $temp);
-        return gettype($allPin);
+        
+        return ($dangerPin);
     }
 
     /**
@@ -156,7 +153,7 @@ class MapController extends Controller {
 
             if($row->token_helper){
 
-                $token = $row['token_helper'];
+                $token = $row->token_helper;
 
                 $token = array($token);
 
